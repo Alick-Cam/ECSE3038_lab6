@@ -44,7 +44,7 @@ void loop() {
     sendCommand(Command, 10, "OK");
     sendCommand(post, 10,"OK");
     sendCommand("AT+CIPCLOSE=0", 15, "OK");
-    delay(500);
+    delay(200);
 }
 
 

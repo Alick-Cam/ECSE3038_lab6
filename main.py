@@ -10,23 +10,26 @@ mongo = PyMongo(app)
 
 class TankValidation(Schema):
     water_level = fields.Integer(required = True)
-    tank_id = fields.String(required = True)
+    tank_id = fields.Integer(required = True)
 
 
 
 @app.route("/tank", methods = ["POST"])
 def data_post():
     req = request.json
-    water_level = req["water_level"]
-    
+    water_level = req["water_level"] 
     percentage = (water_level * -0.53) + 105.3
+    percentage = int(percentage)
+    database = {
+        "tank_id" : req["tank_id"],
+        "water_level" : percentage
+    }
     tVar = datetime.datetime.now(tz=pytz.timezone('America/Jamaica'))
     tVartoString = tVar.isoformat()
     try:
-        print(req)
-        tankTemp = TankValidation().load(request.json)
+        print(database)
+        tankTemp = TankValidation().load(database)
         mongo.db.tanks.insert_one(tankTemp)
-        print("Something")
         return {"success": "true","msg": "data saved in database successfully", "date": tVartoString} #no need to jsonify since its a single object. Only jsonify when a list of objects are returned
 
     except ValidationError as ve:
